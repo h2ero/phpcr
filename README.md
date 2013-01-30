@@ -1,8 +1,8 @@
 #phpcr.vim
 Auto format php code.
 ###Conventions and Style 
-reference:  
-1. [http://kohanaframework.org/3.0/guide/kohana/conventions](http://kohanaframework.org/3.0/guide/kohana/conventions)
+Reference:  
+1. [http://kohanaframework.org/3.0/guide/kohana/conventions](http://kohanaframework.org/3.0/guide/kohana/conventions)  
 2. [http://pear.php.net/manual/en/standards.php](http://pear.php.net/manual/en/standards.php)  
 
 // Correct:  
