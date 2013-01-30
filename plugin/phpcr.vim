@@ -85,7 +85,11 @@ function! phpcr#Add_space()
     let s:n_line = substitute(s:n_line,'\s*\w\@<!\(\cand\|\cor\|\cxor\|\cnot\)\w\@!\s*',' \U\1 ','g')
 
     " 14. { newline
-    let s:n_line = substitute(s:n_line,')\s*{',')<CR>{','g')
+    let s:n_line = substitute(s:n_line,'\()\|else\)\w\@!\s*{','\1<CR>{','g')
+    "     {} newline
+    let s:n_line = substitute(s:n_line,'{\s*}','{<CR>}','g')
+    "     } newline
+    let s:n_line = substitute(s:n_line,'}\(else\|elseif\)\w\@!','}<CR>\1','g')
 
     " str restore
     let s:index = len(s:strlist) - 1
@@ -99,7 +103,9 @@ function! phpcr#Add_space()
     let s:n_line_list = split(s:n_line, '<CR>')
 
     " write line
-    call setline(s:now_line,s:n_line_list)
+    call setline(s:now_line,s:n_line_list[0])
+    unlet s:n_line_list[0]
+    call append(s:now_line,s:n_line_list)
 
 endfunc
 
