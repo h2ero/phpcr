@@ -44,8 +44,15 @@ function! phpcr#Add_space()
         endif
     endwhile
 
-    " 1.  =+*<-%/ exclude => != !== .= += <= 
-    let s:n_line = substitute(s:n_line,'\s*\(!\|!=\|+=\|<=\|\.\)\@<!\([%/=*+<-]\+[>]\@!\)\s*',' \2 ','g')
+    " 1.  =+*<-%/ exclude => != !== .= += <=  ->
+    let s:n_line = substitute(s:n_line,'\s*\(!\|!=\|+=\|<=\|-=\|*=\|%=\|-\|+\|\.\)\@<!\([%/=*+<-]\+[>]\@!\)\s*',' \2 ','g')
+
+    " >  exclude ->
+    let s:n_line = substitute(s:n_line,'\s*\(-\)\@<!\(>\)\s*',' \2 ','g')
+
+    " --  ++               eg: change $k ++ or -- $k to $k++ or --$k
+    let s:n_line = substitute(s:n_line,'\(\w\+\)\s*\([-+]\{2,}\)','\1\2','g')
+    let s:n_line = substitute(s:n_line,'\([-+]\{2,}\)\s*\(\w\+\)','\1\2','g')
 
     " 2.  ,                eg : array('a' => 'b', 'c' => 'd')
     let s:n_line = substitute(s:n_line,'\s*\([,]\+\)\s*','\1 ','g')
