@@ -4,6 +4,7 @@ Auto format php code.
 Reference:  
 1. [http://kohanaframework.org/3.0/guide/kohana/conventions](http://kohanaframework.org/3.0/guide/kohana/conventions)  
 2. [http://pear.php.net/manual/en/standards.php](http://pear.php.net/manual/en/standards.php)  
+3. [https://github.com/php-fig/fig-standards/tree/master/accepted](https://github.com/php-fig/fig-standards/tree/master/accepted)
 
 // Correct:  
 // Incorrect:
