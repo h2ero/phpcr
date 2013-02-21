@@ -75,7 +75,7 @@ function! phpcr#Add_space()
     let s:n_line = substitute(s:n_line,'\s*\(?\)\s*\(.\{-}\)\s*:\@<!\(:\):\@!\s*',' \1 \2 \3 ','g')
 
     " 11. for(;;)          eg : for($i = 0; $i < 100; $i++) 
-    let s:n_line = substitute(s:n_line,'\(for\s(\)\@<=\([^;]*\)\(;\)\([^;]*\)\(;\)','\2\3 \4\5 ','g')
+    let s:n_line = substitute(s:n_line,'\(for\s(\)\@<=\([^;]*\)\(;\)\s*\([^;]*\)\(;\)\s*','\2\3 \4\5 ','g')
 
     " 12. && ||  replace with and or
     let s:n_line = substitute(s:n_line,'\s*||\s*',' OR ','g')
