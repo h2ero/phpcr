@@ -48,7 +48,7 @@ function! phpcr#Add_space()
     let s:n_line = substitute(s:n_line,'\s*\(!\|!=\|+=\|<=\|-=\|*=\|%=\|-\|+\|\.\)\@<!\([%/=*+<-]\+[>]\@!\)\s*',' \2 ','g')
 
     " >  exclude ->
-    let s:n_line = substitute(s:n_line,'\s*\(-\)\@<!\(>\)\s*',' \2 ','g')
+    let s:n_line = substitute(s:n_line,'\s*\(-\|=\)\@<!\(>\)\s*',' \2 ','g')
 
     " --  ++               eg: change $k ++ or -- $k to $k++ or --$k
     let s:n_line = substitute(s:n_line,'\(\w\+\)\s*\([-+]\{2,}\)','\1\2','g')
