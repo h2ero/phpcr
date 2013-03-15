@@ -45,7 +45,7 @@ function! phpcr#Add_space()
     endwhile
 
     " 1.  =+*<-%/ exclude => != !== .= += <=  ->
-    let s:n_line = substitute(s:n_line,'\s*\(!\|!=\|+=\|<=\|-=\|*=\|%=\|-\|+\|\.\)\@<!\([%/=*+<-]\+[>]\@!\)\s*',' \2 ','g')
+    let s:n_line = substitute(s:n_line,'\(\w\+\)\@<=\s*\(!\|!=\|+=\|<=\|-=\|*=\|%=\|-\|+\|\.\)\@<!\([%/=*+<-]\+[>]\@!\)\s*',' \3 ','g')
 
     " >  exclude ->
     let s:n_line = substitute(s:n_line,'\s*\(-\|=\)\@<!\(>\)\s*',' \2 ','g')
@@ -91,12 +91,12 @@ function! phpcr#Add_space()
     " 13. and or xor not      eg : if (1 AND 2 OR 3 XOR 4)  exclude error word contains or
     let s:n_line = substitute(s:n_line,'\s*\w\@<!\(\cand\|\cor\|\cxor\|\cnot\)\w\@!\s*',' \U\1 ','g')
 
-    " 14. { newline
-    let s:n_line = substitute(s:n_line,'\()\|else\)\w\@!\s*{','\1<CR>{','g')
-    "     {} newline
-    let s:n_line = substitute(s:n_line,'{\s*}','{<CR>}','g')
-    "     } newline
-    let s:n_line = substitute(s:n_line,'}\(else\|elseif\)\w\@!','}<CR>\1','g')
+    "" 14. { newline
+    "let s:n_line = substitute(s:n_line,'\()\|else\)\w\@!\s*{','\1<CR>{','g')
+    ""     {} newline
+    "let s:n_line = substitute(s:n_line,'{\s*}','{<CR>}','g')
+    ""     } newline
+    "let s:n_line = substitute(s:n_line,'}\(else\|elseif\)\w\@!','}<CR>\1','g')
 
     " str restore
     let s:index = len(s:strlist) - 1
