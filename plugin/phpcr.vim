@@ -76,7 +76,7 @@ function! phpcr#Add_space()
     let s:n_line = substitute(s:n_line,'\s*\(&&\|||\)\s*',' \1 ','g')
 
     " 9.  (int)            eg : if ( (int) $foo) in up regex will replace it like if((int) $foo), follow will fix it.
-    let s:n_line = substitute(s:n_line,'\s*(\(int\|bool\|float\|string\|binary\|array\|object\|unset\))\s*',' (\1) ','g')
+    let s:n_line = substitute(s:n_line,'\s*(\(int\|boolen\|bool\|float\|string\|binary\|array\|object\|unset\))\s*',' (\1) ','g')
 
     " 10.  ?:              eg : $foo = $bar ? $foo : $bar;
     let s:n_line = substitute(s:n_line,'\s*\(?\)\s*\(.\{-}\)\s*:\@<!\(:\):\@!\s*',' \1 \2 \3 ','g')
