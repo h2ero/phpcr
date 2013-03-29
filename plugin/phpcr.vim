@@ -1,8 +1,8 @@
 " phpcr.vim  ENTER FORMAT CODE ON NOWLINE
 " Author: h2ero <122750707@qq.com>
 " Start Date: 2013-1-14
-" Last Change: 2013-1-30
-" Version: 0.0.1
+" Last Change: 2013-3-29
+" Version: 0.0.2
 " License: MIT license <http://www.opensource.org/licenses/mit-license>
 
 if exists("g:loaded_phpcr") || &cp
