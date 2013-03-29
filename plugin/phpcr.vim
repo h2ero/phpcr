@@ -38,6 +38,8 @@ function! phpcr#Add_space()
             let s:flag = 1
         else
             let s:rstr = s:replacelist[1].s:replacelist[2].s:replacelist[1]
+            "escape
+            let s:rstr = escape(s:rstr,' \')
             call add(s:strlist,['STR'.s:index,s:rstr])
             let s:n_line = substitute(s:n_line,s:rstr,'STR'.s:index,'')
             let s:index+=1
@@ -129,4 +131,5 @@ function! phpcr#Check_exec()
     endif
 endfunc
 
-au FileType php inoremap <CR> <Esc>:call phpcr#Check_exec()<CR>
+au FileType php inoremap <buffer> <CR> <Esc>:call phpcr#Check_exec()<CR>
+
