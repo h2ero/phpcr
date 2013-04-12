@@ -39,7 +39,7 @@ function! phpcr#Add_space()
         else
             let s:rstr = s:replacelist[1].s:replacelist[2].s:replacelist[1]
             "escape
-            let s:rstr = escape(s:rstr,']/')
+            let s:rstr = escape(s:rstr,']\/')
             call add(s:strlist,['STR'.s:index,s:rstr])
             let s:n_line = substitute(s:n_line,s:rstr,'STR'.s:index,'')
             let s:index+=1
@@ -121,12 +121,12 @@ endfunc
 function! phpcr#Check_exec()
     let s:now_line = line( '.' )
     let s:n_line = getline(s:now_line)
-    let s:html = matchstr(s:n_line, '^\s*[<.#]')
+    let s:html = matchstr(s:n_line, '^\s*[*<.#]')
     if empty(s:html) 
         call phpcr#Add_space()
     else
         exec "normal! \<ESC>a\<CR>"
-        echo "this is html"
+        echo "this is html or Comment"
         "throw "eroor"
     endif
 endfunc
