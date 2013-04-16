@@ -100,10 +100,10 @@ function! phpcr#Sql_format(line_content)
 
     let line_content = a:line_content
     " 1 SQL keywords  http://docs.oracle.com/cd/B19306_01/appdev.102/b14261/reservewords.htm
-    let s:sql_keywords =  "select,from,where,limit,order,by,desc,asc"
+    let s:sql_keywords =  "select,from,where,limit,order,by,desc,asc,join,on"
     let s:sql_keywords = substitute(s:sql_keywords,',','\\|','g')
 
-    let line_content = substitute(line_content,'\s*\w\@<!\('.s:sql_keywords.'\)\w\@!\s*',' \U\1 ','g')
+    let line_content = substitute(line_content,'\s\+\('.s:sql_keywords.'\)\s\+',' \U\1 ','g')
 
     if s:n_indent == 0 
         let s:n_next_indent = 4
@@ -112,7 +112,7 @@ function! phpcr#Sql_format(line_content)
     endif
 
     " 2   switch newline
-    let line_content = substitute(line_content,'\s*\w\@<!\(FROM\|WHERE\|LIMIT\|ORDER\)\w\@!\s*','<CR>'.repeat(' ', s:n_next_indent).'\1 ','g')
+    let line_content = substitute(line_content,'\s\+\(FROM\|WHERE\|LIMIT\|ORDER\|JOIN\)\s\+','<CR>'.repeat(' ', s:n_next_indent).'\1 ','g')
     return line_content
 
 endfunction
