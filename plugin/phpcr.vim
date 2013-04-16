@@ -10,41 +10,50 @@ if exists("g:loaded_phpcr") || &cp
 endif
 let g:loaded_phpcr = 1
 
-function! phpcr#get_select_lines()
-    let s:start_line = line("'<")
-    let s:end_line = line("'>")
+function! phpcr#Get_select_lines()
 
-    if s:start_line == 0 && s:end_line == 0
+    let start_line = line("'<")
+    let end_line = line("'>")
+
+    if start_line == 0 && end_line == 0
         return []
     endif
 
-    return getline(s:start_line, s:end_line)
+    call phpcr#init()
+    let s:line_list = range(start_line,end_line)
+    for n_line in s:line_list
+       let n_line += g:increase_line_num 
+       call phpcr#Add_space(n_line)
+    endfor
+
 endfunction
 
-function! phpcr#Add_space()
+function! phpcr#Add_space(line_num)
 
-    let s:now_line_nu = line('.')
-    "exec "inoremap <CR> <CR>"
-    exec "normal! a\<CR>\<Esc>"
-    let s:n_line = getline(s:now_line_nu)
-    let s:n_indent = indent(s:now_line_nu)
+    let line_num = a:line_num
+    let n_line = getline(line_num)
+    let s:n_indent = indent(line_num)
 
 
     "format
-    let s:n_line =  phpcr#Str_filter(s:n_line)
-    let s:n_line = phpcr#Main_format(s:n_line)
-    let s:n_line = phpcr#Sql_format(s:n_line)
-    let s:n_line =  phpcr#Str_restore(s:n_line)
+    let n_line =  phpcr#Str_filter(n_line)
+    let n_line = phpcr#Main_format(n_line)
+    let n_line = phpcr#Sql_format(n_line)
+    let n_line =  phpcr#Str_restore(n_line)
     
     " <CR> split
-    let s:n_line_list = split(s:n_line, '<CR>')
+    let n_line_list = split(n_line, '<CR>')
 
     " write line
-    call setline(s:now_line,s:n_line_list[0])
-    unlet s:n_line_list[0]
-    call append(s:now_line,s:n_line_list)
+    call setline(line_num,n_line_list[0])
+    unlet n_line_list[0]
+    let g:increase_line_num += len(n_line_list) 
+    call append(line_num,n_line_list)
 
 endfunc
+function phpcr#init()
+    let g:increase_line_num = 0
+endfunction
 
 " STR REPLACE AND RESTOR
 "----------------------------------------------------------------------
@@ -78,7 +87,7 @@ function! phpcr#Str_restore(line_content)
     let line_content = a:line_content
     let s:index = len(s:strlist) - 1
     while len(s:strlist) > 0
-        let line_content = substitute(s:n_line,s:strlist[s:index][0],s:strlist[s:index][1],'')
+        let line_content = substitute(line_content,s:strlist[s:index][0],s:strlist[s:index][1],'')
         unlet s:strlist[s:index]
         let s:index-=1
     endwhile
@@ -168,11 +177,14 @@ endfunction
 "check html and comment then call phpcr#Add_space
 "----------------------------------------------------------------------
 function! phpcr#Check_exec()
-    let s:now_line = line( '.' )
-    let s:n_line = getline(s:now_line)
+    let s:line_num = line( '.' )
+    let s:n_line = getline(s:line_num)
     let s:html = matchstr(s:n_line, '^\s*[*<.#]')
     if empty(s:html) 
-        call phpcr#Add_space()
+        "exec "inoremap <CR> <CR>"
+        exec "normal! a\<CR>\<Esc>"
+        call phpcr#init()
+        call phpcr#Add_space(s:line_num)
     else
         exec "normal! \<ESC>a\<CR>"
         echo "this is html or Comment"
@@ -182,3 +194,5 @@ endfunc
 
 au FileType php inoremap <buffer> <CR> <Esc>:call phpcr#Check_exec()<CR>
 
+"command
+com! -bang -range -nargs=* Phpcr  call phpcr#Get_select_lines()
