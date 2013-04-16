@@ -27,6 +27,7 @@ function! phpcr#Add_space()
     "exec "inoremap <CR> <CR>"
     exec "normal! a\<CR>\<Esc>"
     let s:n_line = getline(s:now_line_nu)
+    let s:n_indent = indent(s:now_line_nu)
 
     " str replace
     let s:strlist = []
@@ -39,7 +40,7 @@ function! phpcr#Add_space()
         else
             let s:rstr = s:replacelist[1].s:replacelist[2].s:replacelist[1]
             "escape
-            let s:rstr = escape(s:rstr,']\/')
+            let s:rstr = escape(s:rstr,']\/*')
             call add(s:strlist,['STR'.s:index,s:rstr])
             let s:n_line = substitute(s:n_line,s:rstr,'STR'.s:index,'')
             let s:index+=1
@@ -100,6 +101,8 @@ function! phpcr#Add_space()
     ""     } newline
     "let s:n_line = substitute(s:n_line,'}\(else\|elseif\)\w\@!','}<CR>\1','g')
 
+    let s:n_line = phpcr#Sql_format(s:n_line)
+
     " str restore
     let s:index = len(s:strlist) - 1
     while len(s:strlist) > 0
@@ -117,6 +120,21 @@ function! phpcr#Add_space()
     call append(s:now_line,s:n_line_list)
 
 endfunc
+
+function! phpcr#Sql_format(line_content)
+
+    let line_content = a:line_content
+    " 1 SQL keywords  http://docs.oracle.com/cd/B19306_01/appdev.102/b14261/reservewords.htm
+    let s:sql_keywords =  "select,from,where,limit,order,by,desc,asc"
+    let s:sql_keywords = substitute(s:sql_keywords,',','\\|','g')
+
+    let line_content = substitute(line_content,'\s*\w\@<!\('.s:sql_keywords.'\)\w\@!\s*',' \U\1 ','g')
+
+    " 2   switch newline
+    let line_content = substitute(line_content,'\s*\w\@<!\(FROM\|WHERE\|LIMIT\|ORDER\)\w\@!\s*','<CR>'.repeat(' ', s:n_indent*2).'\1 ','g')
+    return line_content
+
+endfunction
 
 function! phpcr#Check_exec()
     let s:now_line = line( '.' )
