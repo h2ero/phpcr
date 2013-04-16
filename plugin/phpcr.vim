@@ -105,8 +105,14 @@ function! phpcr#Sql_format(line_content)
 
     let line_content = substitute(line_content,'\s*\w\@<!\('.s:sql_keywords.'\)\w\@!\s*',' \U\1 ','g')
 
+    if s:n_indent == 0 
+        let s:n_next_indent = 4
+    else
+        let s:n_next_indent = s:n_indent*2
+    endif
+
     " 2   switch newline
-    let line_content = substitute(line_content,'\s*\w\@<!\(FROM\|WHERE\|LIMIT\|ORDER\)\w\@!\s*','<CR>'.repeat(' ', s:n_indent*2).'\1 ','g')
+    let line_content = substitute(line_content,'\s*\w\@<!\(FROM\|WHERE\|LIMIT\|ORDER\)\w\@!\s*','<CR>'.repeat(' ', s:n_next_indent).'\1 ','g')
     return line_content
 
 endfunction
