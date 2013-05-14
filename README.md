@@ -36,3 +36,8 @@ Reference:
         
         $a+=$b/$c-$d;    
         $a += $b / $c - $d;
+
+More:
+----------
+* PHP_CodeSniffer: http://pear.php.net/package/PHP_CodeSniffer/redirected 
+* PHP-CS-Fixer: https://github.com/fabpot/PHP-CS-Fixer
