@@ -31,8 +31,13 @@ function! phpcr#Get_select_lines()
     call phpcr#init()
     let s:line_list = range(start_line,end_line)
     for n_line in s:line_list
-       let n_line += g:increase_line_num 
-       call phpcr#Add_space(n_line)
+
+        "skip space line
+        if match(getline(n_line), "^\s*$") == -1 
+            call phpcr#Add_space(n_line)
+        endif
+
+        let n_line += g:increase_line_num 
     endfor
 
 endfunction
