@@ -112,12 +112,12 @@ function! phpcr#Sql_format(line_content)
     let s:sql_keywords =  "select,from,where,limit,order,by,desc,asc,join,on"
     let s:sql_keywords = substitute(s:sql_keywords,',','\\|','g')
 
-    let line_content = substitute(line_content,'\s\+\('.s:sql_keywords.'\)\s\+',' \U\1 ','g')
+    let line_content = substitute(line_content,'\<\('.s:sql_keywords.'\)\>','\U\1','g')
 
     if s:n_indent == 0 
         let s:n_next_indent = 4
     else
-        let s:n_next_indent = s:n_indent*2
+        let s:n_next_indent = s:n_indent+4
     endif
 
     " 2   switch newline
