@@ -78,6 +78,7 @@ function phpcr#Str_filter(line_content)
     let s:flag = 0
     let s:index= 0
     while s:flag == 0
+        "todo $str= '\\'.'/'; this string can't be replaced right
         let s:replacelist = matchlist(line_content, '\([''"]\)\{1}\(.\{-}\)\\\@<!\1\{1}')
         if len(s:replacelist) == 0 
             let s:flag = 1
