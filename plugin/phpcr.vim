@@ -115,7 +115,7 @@ function! phpcr#Sql_format(line_content)
 
     let line_content = a:line_content
     " 1 SQL keywords  http://docs.oracle.com/cd/B19306_01/appdev.102/b14261/reservewords.htm
-    let s:sql_keywords =  "select,from,where,limit,order,by,desc,asc,join,on"
+    let s:sql_keywords =  "select,from,where,limit,order,group,by,desc,asc,join,on"
     let s:sql_keywords = substitute(s:sql_keywords,',','\\|','g')
 
     let line_content = substitute(line_content,'\<\('.s:sql_keywords.'\)\>','\U\1','g')
