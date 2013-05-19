@@ -1,6 +1,6 @@
 #phpcr.vim
 Auto format php code.
-ascii.io : http://ascii.io/a/2532
+ascii.io : http://ascii.io/a/3199
 ###Conventions and Style 
 Reference:  
 1. [http://kohanaframework.org/3.0/guide/kohana/conventions](http://kohanaframework.org/3.0/guide/kohana/conventions)  
