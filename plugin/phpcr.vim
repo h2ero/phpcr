@@ -10,8 +10,8 @@
 "
 " Author: h2ero <122750707@qq.com>
 " Start Date: 2013-1-14
-" Last Change: 2013-3-29
-" Version: 0.0.2
+" Last Change: 2013-05-23 11:41:42
+" Version: 0.0.3
 " License: MIT license <http://www.opensource.org/licenses/mit-license>
 
 if exists("g:loaded_phpcr") || &cp
@@ -138,7 +138,7 @@ function! phpcr#Main_format(line_content)
     let line_content = a:line_content
 
     " 1.  =+*<-%/ exclude => != !== .= += <=  ->
-    let line_content = substitute(line_content,'\(\w\+\)\@<=\s*\(!\|!=\|+=\|<=\|-=\|*=\|%=\|-\|+\|\.\)\@<!\([%/=*+<-]\+[>]\@!\)\s*',' \3 ','g')
+    let line_content = substitute(line_content,'\(\w\+\|]\)\@<=\s*\(!\|!=\|+=\|<=\|-=\|*=\|%=\|-\|+\|\.\)\@<!\([%/=*+<-]\+[>]\@!\)\s*',' \3 ','g')
 
     " >  exclude ->
     let line_content = substitute(line_content,'\s*\(-\|=\)\@<!\(>\)\s*',' \2 ','g')
