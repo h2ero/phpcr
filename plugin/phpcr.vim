@@ -118,7 +118,7 @@ function! phpcr#Sql_format(line_content)
     let s:sql_keywords =  "select,from,where,limit,order,group,by,desc,asc,join,on,in,left"
     let s:sql_keywords = substitute(s:sql_keywords,',','\\|','g')
 
-    let line_content = substitute(line_content,'\<\('.s:sql_keywords.'\)\>','\U\1','g')
+    let line_content = substitute(line_content,'\(>\)\@<!\<\('.s:sql_keywords.'\)\>\((\)\@!','\U\2','g')
 
     if s:n_indent == 0 
         let s:n_next_indent = 4

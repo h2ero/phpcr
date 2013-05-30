@@ -37,6 +37,15 @@ $arr = array('key' => array('key' => 'value' + 'value2'))
 
 $a+=$b/$c-$d;    
 $a += $b / $c - $d;
+
+$sql = "select * from table1 where id = 11 and ip = '127.0.0.1'";
+$sql = "SELECT *
+    FROM table1
+    WHERE id = 11 AND ip = '127.0.0.1'";
+    
+$db->from('table')->join('table2')->where(array('id'=>1));
+$db->from('table')->join('table2')->where(array('id' => 1));
+
 ```
 
 More:
