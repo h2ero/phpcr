@@ -18,6 +18,11 @@ if exists("g:loaded_phpcr") || &cp
     finish
 endif
 let g:loaded_phpcr = 1
+let g:phpcr_enable = 1
+
+function! phpcr#Toggle()
+    let g:phpcr_enable = g:phpcr_enable == 1 ? 0 : 1 
+endfunction
 
 function! phpcr#Get_select_lines()
 
@@ -40,6 +45,13 @@ function! phpcr#Get_select_lines()
         let n_line += g:increase_line_num 
     endfor
 
+endfunction
+function phpcr#Multi_format()
+    if g:phpcr_enable == 1
+        call phpcr#Get_select_lines()
+    else
+        "nothing
+    endif
 endfunction
 
 function! phpcr#Add_space(line_num)
@@ -64,7 +76,8 @@ function! phpcr#Add_space(line_num)
     let g:increase_line_num += len(n_line_list) 
     call append(line_num,n_line_list)
 
-endfunc
+endfunction
+
 function phpcr#init()
     let g:increase_line_num = 0
 endfunction
@@ -211,9 +224,18 @@ function! phpcr#Check_exec()
         echo "this is html or Comment"
         "throw "eroor"
     endif
-endfunc
+endfunction
 
-au FileType php inoremap <buffer> <CR> <Esc>:call phpcr#Check_exec()<CR>
+function phpcr#run()
+    if g:phpcr_enable == 1
+       call phpcr#Check_exec() 
+    else
+       exec "normal! \<ESC>a\<CR>"
+    endif
+endfunction
+
+autocmd FileType php inoremap <buffer> <CR> <Esc>:call phpcr#run()<CR>
 
 "command
-com! -bang -range -nargs=* Phpcr  call phpcr#Get_select_lines()
+command! -bang -range -nargs=* Phpcr  call phpcr#Multi_format()
+command!  PhpcrToggle  call phpcr#Toggle()
