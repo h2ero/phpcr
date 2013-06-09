@@ -10,8 +10,8 @@
 "
 " Author: h2ero <122750707@qq.com>
 " Start Date: 2013-1-14
-" Last Change: 2013-05-23 11:41:42
-" Version: 0.0.3
+" Last Change: 2013-06-09 12:59:26
+" Version: 0.0.4
 " License: MIT license <http://www.opensource.org/licenses/mit-license>
 
 if exists("g:loaded_phpcr") || &cp
@@ -72,6 +72,7 @@ function! phpcr#Add_space(line_num)
 
     " write line
     call setline(line_num,n_line_list[0])
+    call phpcr#Line_indent(line_num+1)
     unlet n_line_list[0]
     let g:increase_line_num += len(n_line_list) 
     call append(line_num,n_line_list)
@@ -225,12 +226,23 @@ function! phpcr#Check_exec()
         "throw "eroor"
     endif
 endfunction
+function! phpcr#Line_indent(line_num)
+    let line_num = a:line_num
+    exec "normal! \<ESC>o"
+    let n_next_indent = cindent(line_num)
+    let line_content = getline(line_num)
+    let line_content = substitute(line_content,'^',repeat(' ', n_next_indent+1).'\1','g')
+    call setline(line_num, line_content)
+    call setpos('.', [0, line_num , n_next_indent+1, 0])
+    exec "startinsert"
+endfunction
 
 function phpcr#run()
     if g:phpcr_enable == 1
        call phpcr#Check_exec() 
     else
-       exec "normal! \<ESC>a\<CR>"
+       let s:line_num = line( '.' )+1
+       call phpcr#Line_indent(s:line_num)
     endif
 endfunction
 
