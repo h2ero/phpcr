@@ -228,7 +228,6 @@ function! phpcr#Check_exec()
 endfunction
 function! phpcr#Line_indent(line_num)
     let line_num = a:line_num
-    exec "normal! \<ESC>o"
     let n_next_indent = cindent(line_num)
     let line_content = getline(line_num)
     let line_content = substitute(line_content,'^',repeat(' ', n_next_indent+1).'\1','g')
@@ -241,6 +240,7 @@ function phpcr#run()
     if g:phpcr_enable == 1
        call phpcr#Check_exec() 
     else
+       exec "normal! \<ESC>o"
        let s:line_num = line( '.' )+1
        call phpcr#Line_indent(s:line_num)
     endif
