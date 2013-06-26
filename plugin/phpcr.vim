@@ -184,6 +184,8 @@ function! phpcr#Main_format(line_content)
 
     " 9.  (int)            eg : if ( (int) $foo) in up regex will replace it like if((int) $foo), follow will fix it.
     let line_content = substitute(line_content,'\s*(\(int\|boolen\|bool\|float\|string\|binary\|array\|object\|unset\))\s*',' (\1) ','g')
+    "                      eg : $data[(string) $int] if((string) $str)
+    let line_content = substitute(line_content,'\((\|[\)\s*(\(int\|boolen\|bool\|float\|string\|binary\|array\|object\|unset\))\s*','\1(\2) ','g')
 
     " 10.  ?:              eg : $foo = $bar ? $foo : $bar;
     let line_content = substitute(line_content,'\s*\(?\)\s*\(.\{-}\)\s*:\@<!\(:\):\@!\s*',' \1 \2 \3 ','g')
