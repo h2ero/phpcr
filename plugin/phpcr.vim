@@ -10,7 +10,7 @@
 "
 " Author: h2ero <122750707@qq.com>
 " Start Date: 2013-1-14
-" Last Change: 2013-06-09 12:59:26
+" Last Change: 2013-07-08 15:46:30
 " Version: 0.0.4
 " License: MIT license <http://www.opensource.org/licenses/mit-license>
 
@@ -69,13 +69,14 @@ function! phpcr#Add_space(line_num)
     
     " <CR> split
     let n_line_list = split(n_line, '<CR>')
-
-    " write line
-    call setline(line_num,n_line_list[0])
-    call phpcr#Line_indent(line_num+1)
-    unlet n_line_list[0]
-    let g:increase_line_num += len(n_line_list) 
-    call append(line_num,n_line_list)
+    if len(n_line_list) != 0
+        " write line
+        call setline(line_num,n_line_list[0])
+        call phpcr#Line_indent(line_num+1)
+        unlet n_line_list[0]
+        let g:increase_line_num += len(n_line_list) 
+        call append(line_num,n_line_list)
+    endif
 
 endfunction
 
