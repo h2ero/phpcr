@@ -10,7 +10,7 @@
 "
 " Author: h2ero <122750707@qq.com>
 " Start Date: 2013-1-14
-" Last Change: 2013-07-08 15:46:30
+" Last Change: 2013-07-12 09:59:51
 " Version: 0.0.4
 " License: MIT license <http://www.opensource.org/licenses/mit-license>
 
@@ -230,13 +230,13 @@ function! phpcr#Check_exec()
     endif
 endfunction
 function! phpcr#Line_indent(line_num)
-    let line_num = a:line_num
-    let n_next_indent = cindent(line_num)
-    let line_content = getline(line_num)
-    let line_content = substitute(line_content,'^',repeat(' ', n_next_indent+1).'\1','g')
-    call setline(line_num, line_content)
-    call setpos('.', [0, line_num , n_next_indent+1, 0])
-    exec "startinsert"
+    " let line_num = a:line_num
+    " let n_next_indent = cindent(line_num)
+    " let line_content = getline(line_num)
+    " let line_content = substitute(line_content,'^',repeat(' ', n_next_indent+1).'\1','g')
+    " call setline(line_num, line_content)
+    " call setpos('.', [0, line_num , n_next_indent, 0])
+    " exec "startinsert"
 endfunction
 
 function phpcr#run()
