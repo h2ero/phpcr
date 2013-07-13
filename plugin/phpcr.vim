@@ -17,6 +17,11 @@
 if exists("g:loaded_phpcr") || &cp
     finish
 endif
+
+if !exists("g:sql_keywords")
+    let g:sql_keywords = ''
+endif
+
 let g:loaded_phpcr = 1
 let g:phpcr_enable = 1
 
@@ -130,7 +135,8 @@ function! phpcr#Sql_format(line_content)
 
     let line_content = a:line_content
     " 1 SQL keywords  http://docs.oracle.com/cd/B19306_01/appdev.102/b14261/reservewords.htm
-    let s:sql_keywords =  "select,from,where,limit,order,group,by,desc,asc,join,on,in,left"
+    let s:sql_keywords =  "select,from,where,limit,order,group,by,desc,asc,join,on,in,left,"
+    let s:sql_keywords = s:sql_keywords.g:sql_keywords
     let s:sql_keywords = substitute(s:sql_keywords,',','\\|','g')
 
     let line_content = substitute(line_content,'\(>\)\@<!\<\('.s:sql_keywords.'\)\>\((\)\@!','\U\2','g')
