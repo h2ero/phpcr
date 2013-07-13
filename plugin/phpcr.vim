@@ -10,8 +10,8 @@
 "
 " Author: h2ero <122750707@qq.com>
 " Start Date: 2013-1-14
-" Last Change: 2013-07-12 09:59:51
-" Version: 0.0.4
+" Last Change: 2013-07-13 15:22:20
+" Version: 0.1
 " License: MIT license <http://www.opensource.org/licenses/mit-license>
 
 if exists("g:loaded_phpcr") || &cp
@@ -201,12 +201,12 @@ function! phpcr#Main_format(line_content)
     " 13. and or xor not      eg : if (1 AND 2 OR 3 XOR 4)  exclude error word contains or
     let line_content = substitute(line_content,'\s*\w\@<!\(\cand\|\cor\|\cxor\|\cnot\)\w\@!\s*',' \U\1 ','g')
 
-    "" 14. { newline
-    "let line_content = substitute(line_content,'\()\|else\)\w\@!\s*{','\1<CR>{','g')
-    ""     {} newline
-    "let line_content = substitute(line_content,'{\s*}','{<CR>}','g')
-    ""     } newline
-    "let line_content = substitute(line_content,'}\(else\|elseif\)\w\@!','}<CR>\1','g')
+    " 14. { space
+    let line_content = substitute(line_content,'\()\|else\)\w\@!\s*{','\1 {','g')
+    ""     {} space newline
+    let line_content = substitute(line_content,'\s*{\s*}',' {<CR>}','g')
+    "     } space
+    let line_content = substitute(line_content,'}\s*\(else\|elseif\)\w\@!','} \1','g')
 
 
     return line_content
