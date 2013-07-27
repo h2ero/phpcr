@@ -10,7 +10,7 @@
 "
 " Author: h2ero <122750707@qq.com>
 " Start Date: 2013-1-14
-" Last Change: 2013-07-13 15:22:20
+" Last Change: 2013-07-27 21:43:27
 " Version: 0.1
 " License: MIT license <http://www.opensource.org/licenses/mit-license>
 
@@ -159,10 +159,10 @@ function! phpcr#Main_format(line_content)
     let line_content = a:line_content
 
     " 1.  =+*<-%/ exclude => != !== .= += <=  ->
-    let line_content = substitute(line_content,'\(\w\+\|]\)\@<=\s*\(!\|!=\|+=\|<=\|-=\|*=\|%=\|-\|+\|\.\)\@<!\([%/=*+<-]\+[>]\@!\)\s*',' \3 ','g')
+    let line_content = substitute(line_content,'\(\w\+\|]\)\@<=\s*\(!\|!=\|+=\|<=\|>=\|-=\|*=\|%=\|-\|+\|\.\)\@<!\([%/=*+<-]\+[>]\@!\)\s*',' \3 ','g')
 
     " >  exclude ->
-    let line_content = substitute(line_content,'\s*\(-\|=\)\@<!\(>\)\s*',' \2 ','g')
+    let line_content = substitute(line_content,'\s*\(-\|=\)\@<!\(>\)\(=\)\=<!\s*',' \2 ','g')
 
     " --  ++               eg: change $k ++ or -- $k to $k++ or --$k
     let line_content = substitute(line_content,'\(\w\+\)\s*\([-+]\{2,}\)','\1\2','g')
