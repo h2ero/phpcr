@@ -10,8 +10,8 @@
 "
 " Author: h2ero <122750707@qq.com>
 " Start Date: 2013-1-14
-" Last Change: 2013-07-27 21:43:27
-" Version: 0.1
+" Last Change: 2013-07-27 22:10:24
+" Version: 0.1.1
 " License: MIT license <http://www.opensource.org/licenses/mit-license>
 
 if exists("g:loaded_phpcr") || &cp
@@ -24,6 +24,49 @@ endif
 
 let g:loaded_phpcr = 1
 let g:phpcr_enable = 1
+let g:phpcr_replace_list = {}
+"{{{ phpcr_replace_list init
+" 1.  =+*<-%/ exclude => != !== .= += <=  ->
+let g:phpcr_replace_list['\(\w\+\|]\)\@<=\s*\(!\|!=\|+=\|<=\|>=\|-=\|*=\|%=\|-\|+\|\.\)\@<!\([%/=*+<-]\+[>]\@!\)\s*']=' \3 '
+" >  exclude ->
+let g:phpcr_replace_list['\s*\(-\|=\)\@<!\(>\)\(=\)\=<!\s*']=' \2 '
+" --  ++               eg: change $k ++ or -- $k to $k++ or --$k
+let g:phpcr_replace_list['\(\w\+\)\s*\([-+]\{2,}\)']='\1\2'
+let g:phpcr_replace_list['\([-+]\{2,}\)\s*\(\w\+\)']='\1\2'
+" 2.  , eg : array('a' => 'b', 'c' => 'd')
+let g:phpcr_replace_list['\s*\([,]\+\)\s*']='\1 '
+" 3.  ()               eg : if ( $foo )  exclude define('') 
+let g:phpcr_replace_list['\(if\|while\|for\|foreach\|switch\)\@<=\s*\([(]\+\)\(.\{-}\)\([)]\+\)\s*']=' \2\3\4 '
+" 4.  =>               eg : array('a' => 'b', 'c' => 'd')
+let g:phpcr_replace_list['\s*\(=>\)\s*']=' \1 '
+" 5.  + - * /  exclude ++ --
+let g:phpcr_replace_list['\s*\([-]\{2,}\)\s*']='\1'
+" 6.  != !== += .=     eg : if ($foo !== FALSE)  $a += 5;
+let g:phpcr_replace_list['\s*\(!=\+\|+=\|\.=\|<=\)\s*']=' \1 '
+" 7.  (!               eg : if ( ! $foo)
+let g:phpcr_replace_list['\s*[(]\@<=\(!\)\s*']=' \1 '
+" 8.  || &&            eg : if (($foo && $bar) || ($b && $c))
+let g:phpcr_replace_list['\s*\(&&\|||\)\s*']=' \1 '
+" 9.  (int)            eg : if ( (int) $foo) in up regex will replace it like if((int) $foo), follow will fix it.
+let g:phpcr_replace_list['\s*(\(int\|boolen\|bool\|float\|string\|binary\|array\|object\|unset\))\s*']=' (\1) '
+" eg : $data[(string) $int] if((string) $str)
+let g:phpcr_replace_list['\((\|[\)\s*(\(int\|boolen\|bool\|float\|string\|binary\|array\|object\|unset\))\s*']='\1(\2) '
+" 10.  ?:              eg : $foo = $bar ? $foo : $bar;
+let g:phpcr_replace_list['\s*\(?\)\s*\(.\{-}\)\s*:\@<!\(:\):\@!\s*']=' \1 \2 \3 '
+" 11. for(;;)          eg : for($i = 0; $i < 100; $i++) 
+let g:phpcr_replace_list['\(for\s(\)\@<=\([^;]*\)\(;\)\s*\([^;]*\)\(;\)\s*']='\2\3 \4\5 '
+" 12.AND OR
+let g:phpcr_replace_list['\s*||\s*']=' OR '
+let g:phpcr_replace_list['\s*&&\s*']=' AND '
+" 13. and or xor not      eg : if (1 AND 2 OR 3 XOR 4)  exclude error word contains or
+let g:phpcr_replace_list['\s*\w\@<!\(\cand\|\cor\|\cxor\|\cnot\)\w\@!\s*']=' \U\1 '
+" 14. { space
+let g:phpcr_replace_list['\()\|else\)\w\@!\s*{']='\1 {'
+" {} space newline
+let g:phpcr_replace_list['\s*{\s*}']=' {<CR>}'
+" } space
+let g:phpcr_replace_list['}\s*\(else\|elseif\)\w\@!']='} \1'
+"}}}
 
 function! phpcr#Toggle()
     let g:phpcr_enable = g:phpcr_enable == 1 ? 0 : 1 
@@ -157,64 +200,10 @@ endfunction
 "----------------------------------------------------------------------
 function! phpcr#Main_format(line_content)
     let line_content = a:line_content
-
-    " 1.  =+*<-%/ exclude => != !== .= += <=  ->
-    let line_content = substitute(line_content,'\(\w\+\|]\)\@<=\s*\(!\|!=\|+=\|<=\|>=\|-=\|*=\|%=\|-\|+\|\.\)\@<!\([%/=*+<-]\+[>]\@!\)\s*',' \3 ','g')
-
-    " >  exclude ->
-    let line_content = substitute(line_content,'\s*\(-\|=\)\@<!\(>\)\(=\)\=<!\s*',' \2 ','g')
-
-    " --  ++               eg: change $k ++ or -- $k to $k++ or --$k
-    let line_content = substitute(line_content,'\(\w\+\)\s*\([-+]\{2,}\)','\1\2','g')
-    let line_content = substitute(line_content,'\([-+]\{2,}\)\s*\(\w\+\)','\1\2','g')
-
-    " 2.  ,                eg : array('a' => 'b', 'c' => 'd')
-    let line_content = substitute(line_content,'\s*\([,]\+\)\s*','\1 ','g')
-
-    " 3.  ()               eg : if ( $foo )  exclude define('') 
-    let line_content = substitute(line_content,'\(if\|while\|for\|foreach\|switch\)\@<=\s*\([(]\+\)\(.\{-}\)\([)]\+\)\s*',' \2\3\4 ','g')
-
-    " 4.  =>               eg : array('a' => 'b', 'c' => 'd')
-    let line_content = substitute(line_content,'\s*\(=>\)\s*',' \1 ','g')
-
-    " 5.  + - * /  exclude ++ --
-    "let n_line = substitute(n_line,'\s*\([-]\{2,}\)\s*','\1','g')
-
-    " 6.  != !== += .=     eg : if ($foo !== FALSE)  $a += 5;
-    let line_content = substitute(line_content,'\s*\(!=\+\|+=\|\.=\|<=\)\s*',' \1 ','g')
-
-    " 7.  (!               eg : if ( ! $foo)
-    let line_content = substitute(line_content,'\s*[(]\@<=\(!\)\s*',' \1 ','g')
-
-    " 8.  || &&            eg : if (($foo && $bar) || ($b && $c))
-    let line_content = substitute(line_content,'\s*\(&&\|||\)\s*',' \1 ','g')
-
-    " 9.  (int)            eg : if ( (int) $foo) in up regex will replace it like if((int) $foo), follow will fix it.
-    let line_content = substitute(line_content,'\s*(\(int\|boolen\|bool\|float\|string\|binary\|array\|object\|unset\))\s*',' (\1) ','g')
-    "                      eg : $data[(string) $int] if((string) $str)
-    let line_content = substitute(line_content,'\((\|[\)\s*(\(int\|boolen\|bool\|float\|string\|binary\|array\|object\|unset\))\s*','\1(\2) ','g')
-
-    " 10.  ?:              eg : $foo = $bar ? $foo : $bar;
-    let line_content = substitute(line_content,'\s*\(?\)\s*\(.\{-}\)\s*:\@<!\(:\):\@!\s*',' \1 \2 \3 ','g')
-
-    " 11. for(;;)          eg : for($i = 0; $i < 100; $i++) 
-    let line_content = substitute(line_content,'\(for\s(\)\@<=\([^;]*\)\(;\)\s*\([^;]*\)\(;\)\s*','\2\3 \4\5 ','g')
-
-    " 12. && ||  replace with and or
-    let line_content = substitute(line_content,'\s*||\s*',' OR ','g')
-    let line_content = substitute(line_content,'\s*&&\s*',' AND ','g')
-
-    " 13. and or xor not      eg : if (1 AND 2 OR 3 XOR 4)  exclude error word contains or
-    let line_content = substitute(line_content,'\s*\w\@<!\(\cand\|\cor\|\cxor\|\cnot\)\w\@!\s*',' \U\1 ','g')
-
-    " 14. { space
-    let line_content = substitute(line_content,'\()\|else\)\w\@!\s*{','\1 {','g')
-    ""     {} space newline
-    let line_content = substitute(line_content,'\s*{\s*}',' {<CR>}','g')
-    "     } space
-    let line_content = substitute(line_content,'}\s*\(else\|elseif\)\w\@!','} \1','g')
-
-
+    for pat in keys(g:phpcr_replace_list)
+        let sub = g:phpcr_replace_list[pat]
+        let line_content = substitute(line_content, pat, sub, 'g')
+    endfor
     return line_content
 endfunction
 
