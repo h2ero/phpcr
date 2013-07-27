@@ -24,12 +24,13 @@ endif
 
 let g:loaded_phpcr = 1
 let g:phpcr_enable = 1
+
 let g:phpcr_replace_list = {}
 "{{{ phpcr_replace_list init
 " 1.  =+*<-%/ exclude => != !== .= += <=  ->
 let g:phpcr_replace_list['\(\w\+\|]\)\@<=\s*\(!\|!=\|+=\|<=\|>=\|-=\|*=\|%=\|-\|+\|\.\)\@<!\([%/=*+<-]\+[>]\@!\)\s*']=' \3 '
 " >  exclude ->
-let g:phpcr_replace_list['\s*\(-\|=\)\@<!\(>\)\(=\)\=<!\s*']=' \2 '
+let g:phpcr_replace_list['\s*\(-\|=\)\@<!\(>=\|>\)\s*']=' \2 '
 " --  ++               eg: change $k ++ or -- $k to $k++ or --$k
 let g:phpcr_replace_list['\(\w\+\)\s*\([-+]\{2,}\)']='\1\2'
 let g:phpcr_replace_list['\([-+]\{2,}\)\s*\(\w\+\)']='\1\2'
@@ -66,6 +67,7 @@ let g:phpcr_replace_list['\()\|else\)\w\@!\s*{']='\1 {'
 let g:phpcr_replace_list['\s*{\s*}']=' {<CR>}'
 " } space
 let g:phpcr_replace_list['}\s*\(else\|elseif\)\w\@!']='} \1'
+
 "}}}
 
 function! phpcr#Toggle()
@@ -110,17 +112,16 @@ function! phpcr#Add_space(line_num)
 
 
     "format
-    let n_line =  phpcr#Str_filter(n_line)
+    let n_line = phpcr#Str_filter(n_line)
     let n_line = phpcr#Main_format(n_line)
     let n_line = phpcr#Sql_format(n_line)
-    let n_line =  phpcr#Str_restore(n_line)
+    let n_line = phpcr#Str_restore(n_line)
     
     " <CR> split
     let n_line_list = split(n_line, '<CR>')
     if len(n_line_list) != 0
         " write line
         call setline(line_num,n_line_list[0])
-        call phpcr#Line_indent(line_num+1)
         unlet n_line_list[0]
         let g:increase_line_num += len(n_line_list) 
         call append(line_num,n_line_list)
@@ -178,7 +179,7 @@ function! phpcr#Sql_format(line_content)
 
     let line_content = a:line_content
     " 1 SQL keywords  http://docs.oracle.com/cd/B19306_01/appdev.102/b14261/reservewords.htm
-    let s:sql_keywords =  "select,from,where,limit,order,group,by,desc,asc,join,on,in,left,"
+    let s:sql_keywords = "select,from,where,limit,order,group,by,desc,asc,join,on,in,left,"
     let s:sql_keywords = s:sql_keywords.g:sql_keywords
     let s:sql_keywords = substitute(s:sql_keywords,',','\\|','g')
 
@@ -224,15 +225,6 @@ function! phpcr#Check_exec()
         "throw "eroor"
     endif
 endfunction
-function! phpcr#Line_indent(line_num)
-    " let line_num = a:line_num
-    " let n_next_indent = cindent(line_num)
-    " let line_content = getline(line_num)
-    " let line_content = substitute(line_content,'^',repeat(' ', n_next_indent+1).'\1','g')
-    " call setline(line_num, line_content)
-    " call setpos('.', [0, line_num , n_next_indent, 0])
-    " exec "startinsert"
-endfunction
 
 function phpcr#run()
     if g:phpcr_enable == 1
@@ -240,7 +232,6 @@ function phpcr#run()
     else
        exec "normal! \<ESC>o"
        let s:line_num = line( '.' )+1
-       call phpcr#Line_indent(s:line_num)
     endif
 endfunction
 
