@@ -122,6 +122,7 @@ function! phpcr#Add_space(line_num)
     if len(n_line_list) != 0
         " write line
         call setline(line_num,n_line_list[0])
+        call phpcr#Line_indent(line_num+1)
         unlet n_line_list[0]
         let g:increase_line_num += len(n_line_list) 
         call append(line_num,n_line_list)
@@ -197,6 +198,20 @@ function! phpcr#Sql_format(line_content)
 
 endfunction
 
+"line indent
+function! phpcr#Line_indent(line_num)
+    let line_num = a:line_num
+    " exec "normal! \<ESC>o"
+    let v:lnum = line_num
+    let n_next_indent = GetPhpIndent()
+    let line_content = getline(line_num)
+    let line_content = substitute(line_content,'^\s+',repeat(' ', n_next_indent+1).'\1','g')
+    call setline(line_num, line_content)
+    call setpos('.', [0, line_num , n_next_indent+1, 0])
+    exec "startinsert"
+endfunction
+
+
 "MAIN FORMAT
 "----------------------------------------------------------------------
 function! phpcr#Main_format(line_content)
@@ -232,6 +247,7 @@ function phpcr#run()
     else
        exec "normal! \<ESC>o"
        let s:line_num = line( '.' )+1
+       call phpcr#Line_indent(s:line_num)
     endif
 endfunction
 
