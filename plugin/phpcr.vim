@@ -205,7 +205,7 @@ function! phpcr#Line_indent(line_num)
     let v:lnum = line_num
     let n_next_indent = GetPhpIndent()
     let line_content = getline(line_num)
-    let line_content = substitute(line_content,'^\s+',repeat(' ', n_next_indent+1).'\1','g')
+    let line_content = substitute(line_content,'^\s*',repeat(' ', n_next_indent+1).'\1','g')
     call setline(line_num, line_content)
     call setpos('.', [0, line_num , n_next_indent+1, 0])
     exec "startinsert"
