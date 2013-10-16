@@ -184,7 +184,7 @@ function! phpcr#Sql_format(line_content)
     let s:sql_keywords = s:sql_keywords.g:sql_keywords
     let s:sql_keywords = substitute(s:sql_keywords,',','\\|','g')
 
-    let line_content = substitute(line_content,'\(>\)\@<!\<\('.s:sql_keywords.'\)\>\((\)\@!','\U\2','g')
+    let line_content = substitute(line_content,'\(>\)\@<!\<\('.s:sql_keywords.'\)\>\((\)\@!','\U\2','gi')
 
     if s:n_indent == 0 
         let s:n_next_indent = 4
@@ -234,6 +234,7 @@ function! phpcr#Check_exec()
         exec "normal! a\<CR>\<Esc>"
         call phpcr#init()
         call phpcr#Add_space(s:line_num)
+        exec "normal! =="
     else
         exec "normal! \<ESC>a\<CR>"
         echo "this is html or Comment"
