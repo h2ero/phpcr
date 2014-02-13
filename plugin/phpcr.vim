@@ -10,8 +10,8 @@
 "
 " Author: h2ero <122750707@qq.com>
 " Start Date: 2013-1-14
-" Last Change: 2013-07-27 22:10:24
-" Version: 0.1.1
+" Last Change: 2014-02-13 09:50:39
+" Version: 0.1.2
 " License: MIT license <http://www.opensource.org/licenses/mit-license>
 
 if exists("g:loaded_phpcr") || &cp
@@ -57,8 +57,8 @@ let g:phpcr_replace_list['\s*\(?\)\s*\(.\{-}\)\s*:\@<!\(:\):\@!\s*']=' \1 \2 \3 
 " 11. for(;;)          eg : for($i = 0; $i < 100; $i++) 
 let g:phpcr_replace_list['\(for\s(\)\@<=\([^;]*\)\(;\)\s*\([^;]*\)\(;\)\s*']='\2\3 \4\5 '
 " 12.AND OR
-let g:phpcr_replace_list['\s*||\s*']=' OR '
-let g:phpcr_replace_list['\s*&&\s*']=' AND '
+" let g:phpcr_replace_list['\s*||\s*']=' OR '
+" let g:phpcr_replace_list['\s*&&\s*']=' AND '
 " 13. and or xor not      eg : if (1 AND 2 OR 3 XOR 4)  exclude error word contains or
 let g:phpcr_replace_list['\s*\w\@<!\(\cand\|\cor\|\cxor\|\cnot\)\w\@!\s*']=' \U\1 '
 " 14. { space
@@ -119,6 +119,15 @@ function! phpcr#Add_space(line_num)
     
     " <CR> split
     let n_line_list = split(n_line, '<CR>')
+    if !exists("g:increase_line_num")
+        if len(n_line_list) != 0
+            call setline(line_num,n_line_list[0])
+            unlet n_line_list[0]
+            call append(line_num,n_line_list)
+        endif
+        return 
+    endif
+
     if len(n_line_list) != 0
         " write line
         call setline(line_num,n_line_list[0])
@@ -257,3 +266,4 @@ autocmd FileType php inoremap <buffer> <CR> <Esc>:call phpcr#run()<CR>
 "command
 command! -bang -range -nargs=* Phpcr  call phpcr#Multi_format()
 command!  PhpcrToggle  call phpcr#Toggle()
+command!  PhpcrLineFormat  call phpcr#Add_space(line( '.' ))
