@@ -1,7 +1,8 @@
 #phpcr.vim
 Auto format php code.
-ascii.io : http://ascii.io/a/4160
 
+### Usage
+* insert mode press <kbd>Enter</kbd> (CR)
 
 ###Conventions and Style 
 Reference:  
